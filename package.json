@@ -1,0 +1,31 @@
+{
+  "name": "niels-with-them-skills",
+  "version": "0.1.0",
+  "description": "Production-grade engineering and daily task skills for AI coding agents",
+  "bin": {
+    "niels-with-them-skills": "./bin/cli.js"
+  },
+  "type": "module",
+  "files": [
+    "bin",
+    "skills",
+    "agents",
+    "references",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NielsElmgaard/niels-with-them-skills.git"
+  },
+  "keywords": [
+    "ai",
+    "skills",
+    "agents",
+    "antigravity",
+    "claude",
+    "gemini",
+    "coding-assistant"
+  ],
+  "author": "Niels Elmgaard Kjeldbjerg",
+  "license": "MIT"
+}
