@@ -35,11 +35,7 @@ description: Guides agents through [task/workflow]. Use when [specific trigger c
 - `name`: Lowercase, hyphen-separated. Must match the directory name.
 - `description`: Start with what the skill does in third person, then include one or more clear "Use when" trigger conditions. Include both *what* and *when*. Maximum 1024 characters.
 
-Published names are compatibility identifiers. In particular,
-`browser-testing-with-devtools` is the stable upstream name because other
-skills refer to it directly. A downstream catalog may rename it, but that
-catalog owns the alias or migration mapping; downstream-only aliases are not
-maintained in this repository.
+Published names are compatibility identifiers. A skill's `name` in frontmatter must match its directory name under `skills/` (for example, `skill-creator`). Because other skills and agent prompts refer to skills by this identifier, published names should remain stable. Downstream catalogs that map or alias skill names manage their own migration mappings; aliases are not maintained in this repository.
 
 **Why this matters:** Agents discover skills by reading descriptions. The description is injected into the system prompt, so it must tell the agent both what the skill provides and when to activate it. Do not summarize the workflow — if the description contains process steps, the agent may follow the summary instead of reading the full skill.
 
@@ -119,11 +115,11 @@ If a skill does not need runnable helpers, do not create an empty `scripts/` dir
 
 ## Shared References
 
-Checklists used by more than one skill — testing, security, performance, accessibility, definition-of-done — live in `references/` at the repository root, deliberately *not* inside any skill directory.
+Checklists used by more than one skill — testing, security, performance, accessibility, definition-of-done — live in `references/` at the repository root, deliberately *not* inside any single skill directory.
 
-This is a pack-level design choice. The Niels With Them Skills spec describes a skill as a self-contained directory, but several skills here point at the same checklists. Colocating those would force one of two options: copy the checklist into every skill that uses it, or pick one skill to "own" it and have the others reach into that directory. Both drift over time. A single repo-root copy stays the source of truth.
+This is a design choice: while a skill can be a self-contained directory with its own `references/` folder for skill-specific material, shared checklists used across multiple skills live in the root `references/` directory. Colocating shared references inside one skill would force copying them or having other skills reach into that directory. A single repo-root copy stays the source of truth for shared checklists.
 
-Current convention: material used by exactly one skill is a supporting file inside that skill's directory; material shared across skills goes in `references/`.
+Current convention: material used by exactly one skill is a supporting file or placed in `skills/<name>/references/`; material shared across skills goes in root `references/`.
 
 ## Context Efficiency
 
@@ -182,8 +178,7 @@ This is about skill *content*; the portability of `references/` *paths* is a sep
 Reference other skills by name:
 
 ```markdown
-Follow the `test-driven-development` skill for writing tests.
-If the build breaks, use the `debugging-and-error-recovery` skill.
+Follow the `skill-creator` skill for benchmarking and optimizing new skills.
 ```
 
 Don't duplicate content between skills — reference and link instead.

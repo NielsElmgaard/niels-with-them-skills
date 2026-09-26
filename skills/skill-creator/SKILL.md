@@ -13,7 +13,7 @@ The `skill-creator` guides an AI agent through a rigorous pair-programming workf
 
 This skill standardizes the end-to-end authoring lifecycle:
 1. Understanding intent and gathering requirements.
-2. Authoring clean, model-neutral skills following [references/skill-template.md](file:///workspaces/niels-with-them-skills/references/skill-template.md).
+2. Authoring clean, model-neutral skills following [references/skill-template.md](../../references/skill-template.md).
 3. Defining realistic test prompts and running baseline comparisons.
 4. Grading outputs, calculating benchmarks, and reviewing results interactively.
 5. Optimizing triggering descriptions with automated train/test evaluation loops.
@@ -31,7 +31,7 @@ Use this skill when:
 
 When NOT to use:
 - Generating one-off project code or scripts that are not intended to be reused as an agent skill.
-- Modifying general repository rules (`AGENTS.md`, `GEMINI.md`) that apply globally across all tasks rather than a focused domain workflow.
+- Modifying general repository rules (`AGENTS.md`) that apply globally across all tasks rather than a focused domain workflow.
 - Testing non-skill codebases where standard project test suites (`npm test`, `pytest`) apply.
 
 ---
@@ -61,7 +61,7 @@ Extract what the user actually wants the skill to accomplish:
 
 ### Phase 2: Author the SKILL.md and Supporting Resources
 
-Every skill created must follow the format defined in [references/skill-template.md](file:///workspaces/niels-with-them-skills/references/skill-template.md).
+Every skill created must follow the format defined in [references/skill-template.md](../../references/skill-template.md).
 
 #### Frontmatter
 ```yaml
@@ -94,7 +94,7 @@ Structure the markdown content with these sections:
 ### Phase 3: Test Cases & Baseline Comparison
 
 Every skill with verifiable outcomes needs realistic test prompts.
-Save test cases to `evals/evals.json` (see [references/schemas.md](file:///workspaces/niels-with-them-skills/skills/skill-creator/references/schemas.md)):
+Save test cases to `evals/evals.json` (see [references/schemas.md](references/schemas.md)):
 
 ```json
 {
@@ -134,12 +134,12 @@ Execute test cases in `<skill-name>-workspace/iteration-<N>/`:
 5. **Aggregate Benchmark**:
    - Run the aggregation script from the skill-creator directory:
      ```bash
-     python -m scripts.aggregate_benchmark <workspace>/iteration-N --skill-name <name>
+     python3 -m scripts.aggregate_benchmark <workspace>/iteration-N --skill-name <name>
      ```
    - Produces `benchmark.json` and `benchmark.md` with pass rates, duration, and token usage.
 6. **Launch Human Review Viewer**:
    ```bash
-   python skills/skill-creator/eval-viewer/generate_review.py <workspace>/iteration-N --skill-name "<name>" --benchmark <workspace>/iteration-N/benchmark.json
+   python3 skills/skill-creator/eval-viewer/generate_review.py <workspace>/iteration-N --skill-name "<name>" --benchmark <workspace>/iteration-N/benchmark.json
    ```
    In headless or remote environments, pass `--static <output.html>` to generate a standalone HTML file and collect `feedback.json`.
 
@@ -166,7 +166,7 @@ The frontmatter `description` determines whether agents activate the skill. Afte
 2. **Run Optimization Loop**:
    Run the optimization loop using the pluggable agent runner:
    ```bash
-   python -m scripts.run_loop \
+   python3 -m scripts.run_loop \
      --eval-set <path-to-eval-queries.json> \
      --skill-path <path-to-skill> \
      --agent-runner auto \
@@ -190,7 +190,7 @@ Skills must run reliably across different agent runtimes and model generations (
 
 ### Pluggable Agent Runners
 
-The evaluation harness in `scripts/` uses a modular runner architecture ([scripts/runners.py](file:///workspaces/niels-with-them-skills/skills/skill-creator/scripts/runners.py)):
+The evaluation harness in `scripts/` uses a modular runner architecture ([scripts/runners.py](scripts/runners.py)):
 - **`agy`**: Google Antigravity / Gemini CLI. Discovers temporary skills in `.agents/skills/<clean_name>/SKILL.md` and detects execution via stream events or transcript logs.
 - **`claude`**: Anthropic Claude Code CLI. Discovers temporary skills in `.claude/commands/<clean_name>.md`.
 - **`generic`**: Configurable agent CLI or API runner configured via `AGENT_QUERY_CMD` and `AGENT_LLM_CMD`.
@@ -199,10 +199,10 @@ The evaluation harness in `scripts/` uses a modular runner architecture ([script
 Runners can be specified on the command line:
 ```bash
 # Explicitly use agy
-python -m scripts.run_eval --eval-set evals/trigger.json --skill-path skills/my-skill --agent-runner agy
+python3 -m scripts.run_eval --eval-set evals/trigger.json --skill-path skills/my-skill --agent-runner agy
 
 # Explicitly use claude
-python -m scripts.run_eval --eval-set evals/trigger.json --skill-path skills/my-skill --agent-runner claude
+python3 -m scripts.run_eval --eval-set evals/trigger.json --skill-path skills/my-skill --agent-runner claude
 ```
 
 ### Progressive Disclosure and Context Efficiency
@@ -215,8 +215,8 @@ Keep skills lightweight in context:
 ### Blind A/B Comparison (Advanced)
 
 When comparing two candidate skill designs objectively:
-- Use [agents/comparator.md](file:///workspaces/niels-with-them-skills/skills/skill-creator/agents/comparator.md) to evaluate outputs A and B without knowing which version generated which.
-- Use [agents/analyzer.md](file:///workspaces/niels-with-them-skills/skills/skill-creator/agents/analyzer.md) to inspect the transcripts of both runs and diagnose why the winning approach succeeded.
+- Use [agents/comparator.md](agents/comparator.md) to evaluate outputs A and B without knowing which version generated which.
+- Use [agents/analyzer.md](agents/analyzer.md) to inspect the transcripts of both runs and diagnose why the winning approach succeeded.
 
 ---
 
@@ -249,7 +249,7 @@ Watch for these anti-patterns during authoring and review:
 
 Before finalizing a new or modified skill, confirm all items:
 
-- [ ] **Frontmatter Validated**: Run `python skills/skill-creator/scripts/quick_validate.py skills/<skill-name>` and ensure it exits with code 0.
+- [ ] **Frontmatter Validated**: Run `python3 skills/skill-creator/scripts/quick_validate.py skills/<skill-name>` and ensure it exits with code 0.
 - [ ] **Required Sections Present**: `SKILL.md` contains `# Title`, `## Overview`, `## When to Use` (including positive triggers and negative exclusions), `## Core Process`, `## Common Rationalizations` table, `## Red Flags`, and `## Verification` checklist.
 - [ ] **Model-Neutral**: Verified that instructions describe capabilities and actions rather than private agent tool names or workarounds for a specific model generation.
 - [ ] **Context Budget Respected**: `SKILL.md` is under 500 lines. Supporting reference material (>100 lines) is placed in `references/`.

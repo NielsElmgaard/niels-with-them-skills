@@ -53,7 +53,7 @@ The frontmatter fields above are required. The section template is a recommended
 - Don't add skills that are vague advice instead of actionable processes
 - Don't create supporting files unless content exceeds 100 lines
 - Don't create an empty `scripts/` directory just to match another skill — add `scripts/` only when the skill includes runnable helpers
-- Don't put reference material inside skill directories — use `references/` instead
+- Don't put shared reference material inside skill directories — use root `references/` for shared checklists, and `skills/<name>/references/` for skill-specific reference documentation
 
 ## Modifying Existing Skills
 

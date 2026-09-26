@@ -6,6 +6,10 @@
     "niels-with-them-skills": "./bin/cli.js"
   },
   "type": "module",
+  "scripts": {
+    "test": "node bin/cli.js --list && python3 skills/skill-creator/scripts/quick_validate.py skills/*",
+    "validate": "python3 skills/skill-creator/scripts/quick_validate.py skills/*"
+  },
   "files": [
     "bin",
     "skills",
