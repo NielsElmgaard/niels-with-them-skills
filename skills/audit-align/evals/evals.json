@@ -1,0 +1,42 @@
+{
+  "skill_name": "audit-align",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our project recently migrated from Jest to Vitest and restructured the src/ directory, but our README.md, AGENTS.md, and code comments are full of old commands and paths. The AI agent keeps failing because it tries running `npm run test:jest` and looking for `src/controllers/`. Can you audit and align the codebase to eliminate the stale references?",
+      "expected_output": "The agent inspects the filesystem and package.json to discover the real Vitest commands and new directory structure, updates README.md and AGENTS.md directory trees and test commands, scans for broken internal links, and removes stale comments/docstrings.",
+      "files": [],
+      "expectations": [
+        "Checks filesystem and package manifests to determine ground truth before modifying documentation",
+        "Updates project directory tree in documentation to match current layout",
+        "Verifies that all documented commands actually work in the current environment",
+        "Audits docstrings and code comments to eliminate references to obsolete parameters or deleted files",
+        "Runs reference verification to confirm zero broken links or leaked absolute paths"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm onboarding onto a brownfield Python repository where several functions have docstrings describing parameters that were deleted two refactors ago, and there are random blocks of commented-out code and `file:///workspaces/...` links in the docs. Clean up the stale documentation, docstrings, and zombie code so our coding assistant stops hallucinating.",
+      "expected_output": "The agent audits docstrings against real function signatures, removes dead @param entries, deletes multi-line commented-out code blocks, and sanitizes leaked absolute paths into portable relative markdown links.",
+      "files": [],
+      "expectations": [
+        "Audits docstrings against actual function signatures to eliminate parameter and return type drift",
+        "Removes commented-out dead code blocks (zombie code) rather than leaving them in place",
+        "Converts leaked absolute environment paths (`file:///`, `/workspaces/`) to portable relative links",
+        "Validates that test suites and linters continue to pass without behavioral regression"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We reorganized our CLI repository scripts from `utils/` to `scripts/` and added a new `bin/cli.js` entrypoint. Please run an audit to make sure all docs, script invocations, package.json scripts, and agent instruction files reflect the new structure and no broken links remain.",
+      "expected_output": "The agent discovers the reorganized directories, updates references from `utils/` to `scripts/`, updates the documented CLI entrypoints, runs the reference auditor, and verifies commands.",
+      "files": [],
+      "expectations": [
+        "Discovers relocated files and updates documented command invocations",
+        "Ensures project manifests and agent configuration files (AGENTS.md, CLAUDE.md) are synchronized",
+        "Runs the reference auditor to verify no broken relative links or phantom scripts remain",
+        "Verifies that project commands run successfully"
+      ]
+    }
+  ]
+}

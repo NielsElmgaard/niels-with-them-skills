@@ -34,6 +34,9 @@ This is the niels-with-them-skills project. My collection of engineering skills 
 
 ## Skills by use
 
+### Repository Maintenance & Alignment
+- [`skills/audit-align`](skills/audit-align/) — Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
+
 ### Skill Authoring & Benchmarking
 - [`skills/skill-creator`](skills/skill-creator/) — Guides agents and users through creating new skills, refining existing workflows, and measuring skill performance with evals and benchmarks across AI coding agents.
 

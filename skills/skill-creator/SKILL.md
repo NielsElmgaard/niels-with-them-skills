@@ -38,13 +38,21 @@ When NOT to use:
 
 ## Core Process
 
-The skill authoring workflow follows six structured phases:
+The skill authoring workflow follows structured phases:
 
 ```
-[Phase 1: Intent & Scope] ──> [Phase 2: Author SKILL.md] ──> [Phase 3: Test Cases & Baselines]
+[Phase 1: Intent & Scope] ──> [Phase 2: Author SKILL.md] ──> [Phase 3: Test Cases & User Choice]
                                                                         │
-                                                                        ▼
-[Phase 6: Trigger Tuning] <── [Phase 5: Iteration Loop] <── [Phase 4: Run, Grade & Review]
+                                        ┌───────────────────────────────┴───────────────────────────────┐
+                                        ▼                                                               ▼
+                              [Automated Evals]                                              [Manual User Testing]
+                        Phase 4: Run, Grade & Benchmark                                        User tests skill directly
+                                        │                                                               │
+                                        ▼                                                               ▼
+                        Phase 5: Iteration Loop                                                User shares feedback
+                                        │                                                               │
+                                        ▼                                                               ▼
+                        Phase 6: Trigger Tuning                                                Refine & Exit
 ```
 
 ### Phase 1: Intent & Scope Interview
@@ -91,7 +99,7 @@ Structure the markdown content with these sections:
 - `references/`: Detailed reference documentation loaded on demand (when >100 lines). Shared references across skills live in repository-root `references/`.
 - `assets/`: Templates, fixtures, icons, or sample files.
 
-### Phase 3: Test Cases & Baseline Comparison
+### Phase 3: Test Cases & Evaluation Choice
 
 Every skill with verifiable outcomes needs realistic test prompts.
 Save test cases to `evals/evals.json` (see [references/schemas.md](references/schemas.md)):
@@ -114,7 +122,17 @@ Design realistic test queries:
 - **Realistic detail**: Include file names, column headers, personal context, or casual speech rather than abstract commands.
 - **Discriminative prompts**: Test tasks where consulting the skill makes a measurable difference in accuracy or quality.
 
-### Phase 4: Execution, Grading, & Benchmarking
+#### Confirm Evaluation Preference with the User
+Before executing automated test runs or writing assertions, **always ask the user**:
+- **Automated evaluation**: The agent executes test cases against baselines, measures telemetry, grades assertions, and optimizes trigger descriptions (proceed to Phase 4).
+- **Manual user testing**: The user tests the newly authored skill themselves. The agent presents example test queries from `evals.json`, provides instructions on how to test and what to observe, and waits for user feedback.
+
+If the user chooses manual testing:
+1. Skip Phase 4 (automated execution/grading) and Phase 6 (automated runner loops).
+2. Present the user with clear instructions and sample prompts to run in their session.
+3. Review the user's manual testing observations, incorporate their requested adjustments into `SKILL.md`, and verify against the checklist before finalizing.
+
+### Phase 4: Execution, Grading, & Benchmarking (Automated Path)
 
 Execute test cases in `<skill-name>-workspace/iteration-<N>/`:
 
@@ -230,6 +248,7 @@ When comparing two candidate skill designs objectively:
 | "Writing assertions takes too much time; eyeballing the outputs is enough." | Unchecked outputs hide regressions. Objective assertions and quantitative pass rates are required to know if an edit actually improved the skill. |
 | "I should make the description 'pushy' with all-caps MUSTs to force triggering." | Heavy-handed descriptions cause false triggers on adjacent tasks. Accurate third-person summaries with precise "Use when" conditions achieve balanced precision and recall. |
 | "We only test on one agent, so model-specific tool references are fine." | Skills in this repository are shared assets used across multiple agent runtimes. Hardcoding model-specific mechanics breaks portability. |
+| "I should automatically launch benchmark runs without asking the user." | Automated test runs consume significant time, turns, and token budgets. Always confirm whether the user wants automated evals or prefers testing the skill manually. |
 
 ---
 
@@ -240,6 +259,7 @@ Watch for these anti-patterns during authoring and review:
 - **Missing Frontmatter or Malformed YAML**: Lacking `name` or `description`, or using unquoted strings that break YAML parsing.
 - **Bloated SKILL.md**: A single `SKILL.md` exceeding 500 lines instead of offloading reference material to `references/` or helper code to `scripts/`.
 - **Trivial Assertions**: Writing assertions that only verify a file was created rather than validating the accuracy, schema, and correctness of its contents.
+- **Unconfirmed Automated Test Execution**: Launching multi-run automated evaluation loops or benchmark suites without first asking the user if they prefer automated evals or manual testing.
 - **Overfitted Fixes**: Editing a skill to hardcode a fix for a specific query string from an eval rather than solving the underlying principle.
 - **Untested Descriptions**: Changing frontmatter description without verifying trigger accuracy on both positive and negative queries.
 
@@ -254,6 +274,7 @@ Before finalizing a new or modified skill, confirm all items:
 - [ ] **Model-Neutral**: Verified that instructions describe capabilities and actions rather than private agent tool names or workarounds for a specific model generation.
 - [ ] **Context Budget Respected**: `SKILL.md` is under 500 lines. Supporting reference material (>100 lines) is placed in `references/`.
 - [ ] **Test Cases Defined**: `evals/evals.json` exists with at least 2-3 realistic, discriminative user test prompts.
-- [ ] **Baseline Compared**: Evaluated with-skill against a baseline (without skill or old snapshot) with recorded timing and token metrics.
+- [ ] **Evaluation Preference Confirmed**: Asked the user whether to run automated evaluations/benchmarks or let them test the skill manually before starting test executions.
+- [ ] **Evaluated (Automated or Manual)**: Either executed automated benchmarks against baseline (with recorded timing/token metrics) or guided the user through manual testing and incorporated feedback.
 - [ ] **Exit Criteria Verifiable**: Every checkbox in the skill's own `## Verification` section requires concrete proof/evidence.
-- [ ] **Trigger Evaluated**: Description tested with `scripts/run_eval.py` or optimized with `scripts/run_loop.py` to ensure high precision on positive cases and zero false triggers on negative cases.
+- [ ] **Trigger Evaluated**: Description tested with `scripts/run_eval.py` or optimized with `scripts/run_loop.py` to ensure high precision on positive cases and zero false triggers on negative cases (when automated evals are chosen).

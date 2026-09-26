@@ -45,6 +45,7 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 
 ### Skills
 
+- **[`audit-align`](skills/audit-align/)**: Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
 - **[`skill-creator`](skills/skill-creator/)**: Guides agents and users through creating new skills, refining existing skills, and measuring skill performance with evals and benchmarks across AI coding agents.
 
 ---

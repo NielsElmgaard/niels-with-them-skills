@@ -140,43 +140,84 @@ class AgyRunner(AgentRunner):
             cmd = [
                 "agy",
                 "-p", query,
-                "--output-format", "json",
+                "--output-format", "stream-json",
                 "--dangerously-skip-permissions",
             ]
             if model:
                 cmd.extend(["--model", model])
 
             try:
-                result = subprocess.run(
+                process = subprocess.Popen(
                     cmd,
-                    capture_output=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                     text=True,
                     cwd=str(project_root),
-                    timeout=timeout,
                 )
-            except subprocess.TimeoutExpired:
+            except Exception:
                 return False
 
-            if result.returncode != 0 and not result.stdout:
-                return False
+            start_time = time.time()
+            triggered = False
+            conv_id = None
 
-            # Check if skill was triggered
-            # Method 1: Check transcript from conversation_id
             try:
-                data = json.loads(result.stdout)
-                conv_id = data.get("conversation_id")
-                if conv_id:
+                while time.time() - start_time < timeout:
+                    if process.poll() is not None:
+                        # Process exited, drain remaining lines
+                        for remaining_line in process.stdout:
+                            if clean_name in remaining_line or f"skills/{skill_name}" in remaining_line or f"/{skill_name}/" in remaining_line:
+                                triggered = True
+                                break
+                        break
+
+                    rlist, _, _ = select.select([process.stdout], [], [], 0.5)
+                    if not rlist:
+                        continue
+
+                    line = process.stdout.readline()
+                    if not line:
+                        if process.poll() is not None:
+                            break
+                        continue
+
+                    if not conv_id and '"conversation_id"' in line:
+                        try:
+                            d = json.loads(line)
+                            conv_id = d.get("conversation_id") or d.get("step_update", {}).get("conversation_id")
+                        except Exception:
+                            pass
+
+                    # Real-time trigger check: must be a view_file tool call on the skill
+                    is_view_file = ('"tool_name":"view_file"' in line or '"name":"view_file"' in line or 'view_file' in line)
+                    has_skill = (clean_name in line or f"{skill_name}/SKILL.md" in line or f".agents/skills/{skill_name}" in line or f"skills/{skill_name}" in line)
+                    if is_view_file and has_skill:
+                        triggered = True
+                        break
+
+            finally:
+                if process.poll() is None:
+                    process.terminate()
+                    try:
+                        process.wait(timeout=2)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+
+            if triggered:
+                return True
+
+            # Fallback: check transcript if conv_id was extracted
+            if conv_id:
+                try:
                     transcript_path = Path.home() / ".gemini" / "antigravity-cli" / "brain" / conv_id / ".system_generated" / "logs" / "transcript.jsonl"
                     if transcript_path.is_file():
-                        transcript_content = transcript_path.read_text()
-                        if clean_name in transcript_content:
-                            return True
-            except Exception:
-                pass
-
-            # Method 2: Check raw stdout / response for mention of the skill
-            if clean_name in result.stdout:
-                return True
+                        with open(transcript_path, 'r', encoding='utf-8') as f:
+                            for t_line in f:
+                                if '"name":"view_file"' in t_line or '"tool_name":"view_file"' in t_line:
+                                    if clean_name in t_line or f"{skill_name}/SKILL.md" in t_line or f".agents/skills/{skill_name}" in t_line:
+                                        return True
+                except Exception:
+                    pass
 
             return False
 
