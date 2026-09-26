@@ -7,9 +7,14 @@ This is the niels-with-them-skills project. My collection of engineering skills 
 ## Project Structure
 
 ```
+├── bin/
+│   └── cli.js (npx installer for downstream repositories)
 ├── agents/ (Reusable agent personas)
-├── evals/ (Skill eval cases)
+│   └── README.md
+├── evals/ (Skill eval cases and impact ledger)
+│   └── skill-impact.md
 ├── references/ (Shared references for multiple skills)
+│   └── skill-template.md
 ├── skills/
 │   ├── skill-name/
 │   │   ├── SKILL.md (required)
@@ -21,13 +26,16 @@ This is the niels-with-them-skills project. My collection of engineering skills 
 │   └──
 ├── .gitignore
 ├── AGENTS.md
+├── CLAUDE.md -> AGENTS.md
 ├── CONTRIBUTING.md
+├── package.json
 └── README.md
-
 ```
 
 ## Skills by use
 
+### Skill Authoring & Benchmarking
+- [`skills/skill-creator`](skills/skill-creator/) — Guides agents and users through creating new skills, refining existing workflows, and measuring skill performance with evals and benchmarks across AI coding agents.
 
 ## Conventions
 
@@ -44,16 +52,17 @@ Before adding a new skill or significantly reworking an existing one, run the pr
 
 ## Commands
 
-- `npm test` — Not applicable (this is a documentation project)
-- Validate: Check that all SKILL.md files have valid YAML frontmatter with name and description
-- Evals: `node scripts/run-evals.js` — trigger/routing evals for every skill (CI); `--behavioral <skill>` for graded runs
+- `npm test` — Run CLI listing test and validate frontmatter across all skills
+- `npm run validate` (or `python3 skills/skill-creator/scripts/quick_validate.py skills/*`) — Check that all SKILL.md files have valid YAML frontmatter with name and description
+- Evals: `python3 -m scripts.run_eval --eval-set <eval-set.json> --skill-path skills/<skill>` — Run trigger and routing evaluations for skills
+- CLI Test: `node bin/cli.js --list` — Verify skill discovery in the installer CLI
 
 ## Pull Requests
 
 PRs target the upstream repository's default branch. In a typical fork setup the upstream remote is `upstream` and your fork is `origin`, but the exact remote names are not what matters here.
 
 - Before opening a PR, search the upstream repository's open PRs and issues for work that touches the same files or rules. If any overlaps, coordinate (build on it, align your rules with it, or rebase after it merges) instead of opening a conflicting PR.
-- Prefer small, focused PRs over large refactors of widely shared files (for example, files under `scripts/`), which are more likely to collide with in-flight work.
+- Prefer small, focused PRs over large refactors of widely shared files (for example, shared references or core installer CLI), which are more likely to collide with in-flight work.
 
 ## Boundaries
 

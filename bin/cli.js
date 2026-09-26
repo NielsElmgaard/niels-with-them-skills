@@ -145,7 +145,7 @@ function getAvailableAgents() {
   if (!fs.existsSync(agentsDir)) return [];
 
   return fs.readdirSync(agentsDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md') && entry.name.toLowerCase() !== 'readme.md')
     .map((entry) => entry.name.replace(/\.md$/, ''));
 }
 
@@ -261,7 +261,7 @@ function main() {
   if (options.all || options.includeAgents) {
     const agentsSrc = path.join(REPO_ROOT, 'agents');
     if (fs.existsSync(agentsSrc)) {
-      const files = fs.readdirSync(agentsSrc).filter((f) => f.endsWith('.md'));
+      const files = fs.readdirSync(agentsSrc).filter((f) => f.endsWith('.md') && f.toLowerCase() !== 'readme.md');
       if (files.length > 0) {
         const dest = path.join(targetBase, 'agents');
         installDirectory(agentsSrc, dest, {

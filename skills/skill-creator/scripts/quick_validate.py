@@ -138,16 +138,24 @@ def validate_skill(skill_path):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python quick_validate.py <skill_directory>")
+    if len(sys.argv) < 2:
+        print("Usage: python3 quick_validate.py <skill_directory> [skill_directory_2 ...]")
         sys.exit(1)
 
-    skill_dir = sys.argv[1]
-    valid, message = validate_skill(skill_dir)
-
-    if valid:
-        print(f"✅ {message}")
-        sys.exit(0)
-    else:
-        print(f"❌ {message}")
+    skill_paths = [Path(p) for p in sys.argv[1:]]
+    # Filter to directories
+    target_dirs = [p for p in skill_paths if p.is_dir()]
+    if not target_dirs:
+        print("No valid skill directories provided.")
         sys.exit(1)
+
+    all_valid = True
+    for skill_dir in target_dirs:
+        valid, message = validate_skill(skill_dir)
+        if valid:
+            print(f"✅ {skill_dir.name}: {message}")
+        else:
+            print(f"❌ {skill_dir.name}: {message}")
+            all_valid = False
+
+    sys.exit(0 if all_valid else 1)
