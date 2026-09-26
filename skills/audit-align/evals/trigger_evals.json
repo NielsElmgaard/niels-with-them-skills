@@ -1,0 +1,26 @@
+[
+  {
+    "query": "Our repository documentation, comments, and README directory tree are completely out of date after refactoring. Can you audit and align them with the real code?",
+    "should_trigger": true
+  },
+  {
+    "query": "The README has broken test commands, stale docstrings that don't match function parameters, and dead links. Clean up this brownfield repo.",
+    "should_trigger": true
+  },
+  {
+    "query": "Can you check for stale comments, zombie commented-out code, and leaked absolute file:/// paths across our codebase?",
+    "should_trigger": true
+  },
+  {
+    "query": "Write a new unit test for the authentication middleware in auth.ts.",
+    "should_trigger": false
+  },
+  {
+    "query": "Format our python codebase with black and sort imports with isort.",
+    "should_trigger": false
+  },
+  {
+    "query": "Help me build a new agent skill from scratch with benchmarks and evals.",
+    "should_trigger": false
+  }
+]
