@@ -37,6 +37,13 @@ This is the niels-with-them-skills project. My collection of engineering skills 
 ### Repository Maintenance & Alignment
 - [`skills/audit-align`](skills/audit-align/) — Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
 
+### Engineering Workflow & Quality
+- [`skills/design-api-and-interface`](skills/design-api-and-interface/) — Guides stable API and interface design, module boundaries, and type contracts.
+- [`skills/git-keeper`](skills/git-keeper/) — Structures disciplined git workflows including atomic commits, branch isolation, save points, conventional commit messages, pre-commit checks, and release versioning.
+- [`skills/phasing-out-and-migration`](skills/phasing-out-and-migration/) — Manages phasing out and migration of old systems, APIs, or database schemas (expand/contract).
+- [`skills/prepare-shipping`](skills/prepare-shipping/) — Prepares production launches, pre-launch checklists, monitoring, staged rollouts, and rollback strategies.
+- [`skills/review-that-code`](skills/review-that-code/) — Conducts multi-axis code reviews across correctness, readability, architecture, security, and performance.
+
 ### Skill Authoring & Benchmarking
 - [`skills/skill-creator`](skills/skill-creator/) — Guides agents and users through creating new skills, refining existing workflows, and measuring skill performance with evals and benchmarks across AI coding agents.
 

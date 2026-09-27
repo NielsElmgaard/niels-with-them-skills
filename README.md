@@ -46,7 +46,19 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 ### Skills
 
 - **[`audit-align`](skills/audit-align/)**: Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
+- **[`design-api-and-interface`](skills/design-api-and-interface/)**: Guides stable API and interface design. Use when designing APIs, module boundaries, or any public interface.
+- **[`git-keeper`](skills/git-keeper/)**: Structures disciplined git workflows including atomic commits, branch isolation, save points, conventional commit messages, pre-commit checks, and release versioning.
+- **[`phasing-out-and-migration`](skills/phasing-out-and-migration/)**: Manages phasing out and migration of old systems, APIs, or database schemas (expand/contract).
+- **[`prepare-shipping`](skills/prepare-shipping/)**: Prepares production launches, pre-launch checklists, monitoring, staged rollouts, and rollback strategies.
+- **[`review-that-code`](skills/review-that-code/)**: Conducts multi-axis code reviews across correctness, readability, architecture, security, and performance.
 - **[`skill-creator`](skills/skill-creator/)**: Guides agents and users through creating new skills, refining existing skills, and measuring skill performance with evals and benchmarks across AI coding agents.
+
+### Agent Personas
+
+- **[`code-reviewer`](agents/code-reviewer.md)**: Staff Engineer code reviewer evaluating changes across correctness, readability, architecture, security, and performance.
+- **[`security-auditor`](agents/security-auditor.md)**: Security engineer focused on vulnerability detection, threat modeling, and secure coding practices.
+- **[`test-engineer`](agents/test-engineer.md)**: QA engineer specialized in test strategy, test writing, and coverage analysis.
+- **[`web-performance-auditor`](agents/web-performance-auditor.md)**: Web performance engineer focused on Core Web Vitals, loading, rendering, and network optimization.
 
 ---
 
