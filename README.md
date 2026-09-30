@@ -48,10 +48,15 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 - **[`audit-align`](skills/audit-align/)**: Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
 - **[`design-api-and-interface`](skills/design-api-and-interface/)**: Guides stable API and interface design. Use when designing APIs, module boundaries, or any public interface.
 - **[`git-keeper`](skills/git-keeper/)**: Structures disciplined git workflows including atomic commits, branch isolation, save points, conventional commit messages, pre-commit checks, and release versioning.
+- **[`grill-and-align`](skills/grill-and-align/)**: Extracts underlying intent, stress-tests architecture, scopes the MVP, and records living project documentation (GLOSSARY.md and ADRs) through a Socratic grilling interview before technical specification.
+- **[`make-those-tickets`](skills/make-those-tickets/)**: Decomposes approved technical specifications into small, dependency-ordered, verifiable task tickets.
 - **[`phasing-out-and-migration`](skills/phasing-out-and-migration/)**: Manages phasing out and migration of old systems, APIs, or database schemas (expand/contract).
+- **[`plan-that-ticket`](skills/plan-that-ticket/)**: Prepares an individual task ticket for implementation by isolating context, inspecting target files, and generating a detailed micro-plan (plan.md).
 - **[`prepare-shipping`](skills/prepare-shipping/)**: Prepares production launches, pre-launch checklists, monitoring, staged rollouts, and rollback strategies.
 - **[`review-that-code`](skills/review-that-code/)**: Conducts multi-axis code reviews across correctness, readability, architecture, security, and performance.
 - **[`skill-creator`](skills/skill-creator/)**: Guides agents and users through creating new skills, refining existing skills, and measuring skill performance with evals and benchmarks across AI coding agents.
+- **[`spec-driven-dev`](skills/spec-driven-dev/)**: Synthesizes confirmed intent, architectural decisions, and domain vocabulary into a rigorous technical specification.
+- **[`tdd-implement`](skills/tdd-implement/)**: Executes ticket micro-plans using strict test-driven development (Red, Green, Refactor) and commits atomic save points via git-keeper.
 
 ### Agent Personas
 
