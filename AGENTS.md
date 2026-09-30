@@ -40,9 +40,14 @@ This is the niels-with-them-skills project. My collection of engineering skills 
 ### Engineering Workflow & Quality
 - [`skills/design-api-and-interface`](skills/design-api-and-interface/) — Guides stable API and interface design, module boundaries, and type contracts.
 - [`skills/git-keeper`](skills/git-keeper/) — Structures disciplined git workflows including atomic commits, branch isolation, save points, conventional commit messages, pre-commit checks, and release versioning.
+- [`skills/grill-and-align`](skills/grill-and-align/) — Extracts underlying intent, stress-tests architecture, scopes the MVP, and records living project documentation (GLOSSARY.md and ADRs) through a Socratic grilling interview before technical specification.
+- [`skills/make-those-tickets`](skills/make-those-tickets/) — Decomposes approved technical specifications into small, dependency-ordered, verifiable task tickets with explicit acceptance criteria.
 - [`skills/phasing-out-and-migration`](skills/phasing-out-and-migration/) — Manages phasing out and migration of old systems, APIs, or database schemas (expand/contract).
+- [`skills/plan-that-ticket`](skills/plan-that-ticket/) — Prepares an individual task ticket for implementation by isolating context, inspecting target files, and generating a detailed micro-plan (plan.md).
 - [`skills/prepare-shipping`](skills/prepare-shipping/) — Prepares production launches, pre-launch checklists, monitoring, staged rollouts, and rollback strategies.
 - [`skills/review-that-code`](skills/review-that-code/) — Conducts multi-axis code reviews across correctness, readability, architecture, security, and performance.
+- [`skills/spec-driven-dev`](skills/spec-driven-dev/) — Synthesizes confirmed intent, architectural decisions, and domain vocabulary into a rigorous technical specification.
+- [`skills/tdd-implement`](skills/tdd-implement/) — Executes ticket micro-plans using strict test-driven development (Red, Green, Refactor) and commits atomic save points via git-keeper.
 
 ### Skill Authoring & Benchmarking
 - [`skills/skill-creator`](skills/skill-creator/) — Guides agents and users through creating new skills, refining existing workflows, and measuring skill performance with evals and benchmarks across AI coding agents.
