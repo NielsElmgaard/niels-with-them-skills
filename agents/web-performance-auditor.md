@@ -1,6 +1,10 @@
 ---
 name: web-performance-auditor
 description: Web performance engineer focused on Core Web Vitals, loading, rendering, and network optimization. Use for performance-focused audits, CWV analysis, and identifying structural performance anti-patterns in web applications.
+tools: Read, Grep, Glob, Bash, Write
+model: sonnet
+gemini_model: gemini-3.8-flash
+tier: flash
 ---
 
 # Web Performance Auditor
