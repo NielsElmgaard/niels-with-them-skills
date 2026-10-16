@@ -22,6 +22,9 @@ npx github:NielsElmgaard/niels-with-them-skills --all
 
 # Install into a custom agent directory (default is .agents)
 npx github:NielsElmgaard/niels-with-them-skills --skill skill-creator --target .claude
+
+# Install the AI Software Factory (skills, personas, references, and visual factory/ board)
+npx github:NielsElmgaard/niels-with-them-skills --factory --target .claude
 ```
 
 ### 2. Universal Skills CLI ([skills.sh](https://skills.sh))
@@ -47,6 +50,7 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 
 - **[`audit-align`](skills/audit-align/)**: Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
 - **[`design-api-and-interface`](skills/design-api-and-interface/)**: Guides stable API and interface design. Use when designing APIs, module boundaries, or any public interface.
+- **[`factory`](skills/factory/)**: Orchestrates a visual multi-agent software factory loop across spec writing, worktree-isolated building, parallel multi-axis review rounds, and merge gates.
 - **[`git-keeper`](skills/git-keeper/)**: Structures disciplined git workflows including atomic commits, branch isolation, save points, conventional commit messages, pre-commit checks, and release versioning.
 - **[`grill-and-align`](skills/grill-and-align/)**: Extracts underlying intent, stress-tests architecture, scopes the MVP, and records living project documentation (GLOSSARY.md and ADRs) through a Socratic grilling interview before technical specification.
 - **[`make-those-tickets`](skills/make-those-tickets/)**: Decomposes approved technical specifications into small, dependency-ordered, verifiable task tickets.
@@ -60,10 +64,13 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 
 ### Agent Personas
 
-- **[`code-reviewer`](agents/code-reviewer.md)**: Staff Engineer code reviewer evaluating changes across correctness, readability, architecture, security, and performance.
-- **[`security-auditor`](agents/security-auditor.md)**: Security engineer focused on vulnerability detection, threat modeling, and secure coding practices.
-- **[`test-engineer`](agents/test-engineer.md)**: QA engineer specialized in test strategy, test writing, and coverage analysis.
-- **[`web-performance-auditor`](agents/web-performance-auditor.md)**: Web performance engineer focused on Core Web Vitals, loading, rendering, and network optimization.
+- **[`spec-writer`](agents/spec-writer.md)**: Staff Product & Systems Architect (`opus` / `Gemini 4 Argon`) that inspects the codebase and writes grounded, testable specifications (`spec.md`).
+- **[`builder`](agents/builder.md)**: Senior Implementation Engineer (`opus` / `Gemini 4 Argon`) that implements specs and resolves review rounds inside isolated git worktrees.
+- **[`code-reviewer`](agents/code-reviewer.md)**: Staff Engineer code reviewer (`sonnet` / `Gemini 3.8 Flash`) evaluating changes across correctness, readability, architecture, security, and performance.
+- **[`security-auditor`](agents/security-auditor.md)**: Security engineer (`opus` / `Gemini 4 Argon`) focused on vulnerability detection, threat modeling, and secure coding practices.
+- **[`test-engineer`](agents/test-engineer.md)**: QA engineer (`sonnet` / `Gemini 3.8 Flash`) specialized in test strategy, test writing, and coverage analysis.
+- **[`ui-ux-reviewer`](agents/ui-ux-reviewer.md)**: Product Designer & Accessibility Specialist (`sonnet` / `Gemini 3.8 Flash`) evaluating UX states, UI consistency, and WCAG 2.1 AA compliance.
+- **[`web-performance-auditor`](agents/web-performance-auditor.md)**: Web performance engineer (`sonnet` / `Gemini 3.8 Flash`) focused on Core Web Vitals, loading, rendering, and network optimization.
 
 ---
 

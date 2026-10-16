@@ -7,7 +7,7 @@
   },
   "type": "module",
   "scripts": {
-    "test": "node bin/cli.js --list && python3 skills/skill-creator/scripts/quick_validate.py skills/*",
+    "test": "node bin/cli.js --list && node bin/cli.js --factory --dry-run && python3 skills/skill-creator/scripts/quick_validate.py skills/*",
     "validate": "python3 skills/skill-creator/scripts/quick_validate.py skills/*"
   },
   "files": [

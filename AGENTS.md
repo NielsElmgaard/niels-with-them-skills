@@ -39,6 +39,7 @@ This is the niels-with-them-skills project. My collection of engineering skills 
 
 ### Engineering Workflow & Quality
 - [`skills/design-api-and-interface`](skills/design-api-and-interface/) — Guides stable API and interface design, module boundaries, and type contracts.
+- [`skills/factory`](skills/factory/) — Orchestrates a visual multi-agent software factory loop across spec writing, worktree-isolated building, parallel multi-axis review rounds, and merge gates.
 - [`skills/git-keeper`](skills/git-keeper/) — Structures disciplined git workflows including atomic commits, branch isolation, save points, conventional commit messages, pre-commit checks, and release versioning.
 - [`skills/grill-and-align`](skills/grill-and-align/) — Extracts underlying intent, stress-tests architecture, scopes the MVP, and records living project documentation (GLOSSARY.md and ADRs) through a Socratic grilling interview before technical specification.
 - [`skills/make-those-tickets`](skills/make-those-tickets/) — Decomposes approved technical specifications into small, dependency-ordered, verifiable task tickets with explicit acceptance criteria.
@@ -71,6 +72,7 @@ Before adding a new skill or significantly reworking an existing one, run the pr
 - `npm run validate` (or `python3 skills/skill-creator/scripts/quick_validate.py skills/*`) — Check that all SKILL.md files have valid YAML frontmatter with name and description
 - Evals: `python3 -m scripts.run_eval --eval-set <eval-set.json> --skill-path skills/<skill>` — Run trigger and routing evaluations for skills
 - CLI Test: `node bin/cli.js --list` — Verify skill discovery in the installer CLI
+- Factory Install: `node bin/cli.js --factory --target .claude` — Install factory skills, personas, references, and scaffold `factory/` into a target project
 
 ## Pull Requests
 
