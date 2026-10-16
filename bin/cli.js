@@ -29,6 +29,7 @@ function parseArgs(args) {
     help: false,
     list: false,
     all: false,
+    factory: false,
     skills: [],
     includeAgents: false,
     includeReferences: false,
@@ -47,6 +48,8 @@ function parseArgs(args) {
       options.list = true;
     } else if (arg === '--all') {
       options.all = true;
+    } else if (arg === '--factory' || arg === '-F') {
+      options.factory = true;
     } else if (arg === '--agents' || arg === '-a') {
       options.includeAgents = true;
     } else if (arg === '--references' || arg === '-r') {
@@ -89,6 +92,7 @@ ${colors.bold}USAGE:${colors.reset}
 
 ${colors.bold}OPTIONS:${colors.reset}
   -s, --skill <name>     Install specific skill(s) (comma-separated or repeatable)
+  -F, --factory          Install the AI Software Factory (skills, personas, references, and factory/ board)
   --all                  Install all available skills, agent personas, and references
   -a, --agents           Install agent personas into <target>/agents/
   -r, --references       Install shared reference checklists into <target>/references/
@@ -105,6 +109,9 @@ ${colors.bold}EXAMPLES:${colors.reset}
 
   # Install a specific skill (e.g. skill-creator) into .agents/skills/
   npx niels-with-them-skills --skill skill-creator
+
+  # Install the AI Software Factory and scaffold factory/ into a project for Claude Code
+  npx niels-with-them-skills --factory --target .claude
 
   # Install all skills and agent personas
   npx niels-with-them-skills --all
@@ -184,6 +191,14 @@ function installDirectory(sourceDir, destDir, { symlink, force, dryRun, label })
   }
 
   if (fs.existsSync(destDir)) {
+    try {
+      if (fs.realpathSync(sourceDir) === fs.realpathSync(destDir)) {
+        console.log(`  ${colors.green}✓${colors.reset} Already linked ${colors.bold}${label}${colors.reset} -> ${destDir}`);
+        return;
+      }
+    } catch {
+      // Ignore realpath errors for broken symlinks
+    }
     if (!force) {
       console.log(`  ${colors.yellow}Notice:${colors.reset} ${destDir} already exists. Use ${colors.bold}--force${colors.reset} to overwrite.`);
       return;
@@ -199,6 +214,77 @@ function installDirectory(sourceDir, destDir, { symlink, force, dryRun, label })
   } else {
     fs.cpSync(sourceDir, destDir, { recursive: true });
     console.log(`  ${colors.green}✓${colors.reset} Installed ${colors.bold}${label}${colors.reset} -> ${destDir}`);
+  }
+}
+
+function scaffoldFactoryWorkspace(cwd, { force, dryRun }) {
+  const assetsDir = path.join(REPO_ROOT, 'skills', 'factory', 'assets');
+  const factoryDest = path.join(cwd, 'factory');
+  const jobsDest = path.join(factoryDest, 'jobs');
+
+  const filesToScaffold = [
+    {
+      src: path.join(assetsDir, 'dashboard.html'),
+      dest: path.join(factoryDest, 'dashboard.html'),
+      label: 'factory/dashboard.html',
+      preserveIfExisting: false,
+    },
+    {
+      src: path.join(assetsDir, 'board.template.json'),
+      dest: path.join(factoryDest, 'board.json'),
+      label: 'factory/board.json',
+      preserveIfExisting: true,
+      transform: (raw) => {
+        const parsed = JSON.parse(raw);
+        parsed.project = parsed.project || {};
+        parsed.project.name = path.basename(cwd) || 'project';
+        return JSON.stringify(parsed, null, 2) + '\n';
+      },
+    },
+    {
+      src: path.join(assetsDir, 'backlog.template.md'),
+      dest: path.join(factoryDest, 'backlog.md'),
+      label: 'factory/backlog.md',
+      preserveIfExisting: true,
+    },
+  ];
+
+  if (dryRun) {
+    for (const item of filesToScaffold) {
+      console.log(`  ${colors.yellow}[dry-run]${colors.reset} Would scaffold ${item.label} -> ${item.dest}`);
+    }
+    return;
+  }
+
+  fs.mkdirSync(jobsDest, { recursive: true });
+
+  for (const item of filesToScaffold) {
+    if (!fs.existsSync(item.src)) continue;
+    if (fs.existsSync(item.dest) && (item.preserveIfExisting && !force)) {
+      console.log(`  ${colors.dim}• Preserved existing ${item.label} (use --force to reset)${colors.reset}`);
+      continue;
+    }
+    let content = fs.readFileSync(item.src, 'utf8');
+    if (item.transform) {
+      content = item.transform(content);
+    }
+    fs.writeFileSync(item.dest, content, 'utf8');
+    console.log(`  ${colors.green}✓${colors.reset} Scaffolded ${colors.bold}${item.label}${colors.reset} -> ${item.dest}`);
+  }
+
+  const gitignorePath = path.join(cwd, '.gitignore');
+  const worktreesEntry = '.worktrees/';
+  if (fs.existsSync(gitignorePath)) {
+    const existingIgnore = fs.readFileSync(gitignorePath, 'utf8');
+    const lines = existingIgnore.split(/\r?\n/).map((l) => l.trim());
+    if (!lines.includes('.worktrees') && !lines.includes('.worktrees/')) {
+      const prefix = existingIgnore.endsWith('\n') || existingIgnore.length === 0 ? '' : '\n';
+      fs.appendFileSync(gitignorePath, `${prefix}${worktreesEntry}\n`, 'utf8');
+      console.log(`  ${colors.green}✓${colors.reset} Added ${colors.bold}${worktreesEntry}${colors.reset} to .gitignore`);
+    }
+  } else {
+    fs.writeFileSync(gitignorePath, `${worktreesEntry}\n`, 'utf8');
+    console.log(`  ${colors.green}✓${colors.reset} Created .gitignore with ${colors.bold}${worktreesEntry}${colors.reset}`);
   }
 }
 
@@ -218,8 +304,19 @@ function main() {
   const availableSkills = getAvailableSkills();
   const availableSkillNames = availableSkills.map((s) => s.name);
 
+  if (options.factory) {
+    const factorySkills = ['factory', 'git-keeper', 'review-that-code', 'design-api-and-interface'];
+    for (const s of factorySkills) {
+      if (availableSkillNames.includes(s) && !options.skills.includes(s)) {
+        options.skills.push(s);
+      }
+    }
+    options.includeAgents = true;
+    options.includeReferences = true;
+  }
+
   // If no action specified, show list and usage
-  if (!options.all && options.skills.length === 0 && !options.includeAgents && !options.includeReferences) {
+  if (!options.all && !options.factory && options.skills.length === 0 && !options.includeAgents && !options.includeReferences) {
     printHelp();
     printList();
     return;
@@ -257,7 +354,7 @@ function main() {
     });
   }
 
-  // 3. Install Agents (if requested or --all)
+  // 3. Install Agents (if requested or --all or --factory)
   if (options.all || options.includeAgents) {
     const agentsSrc = path.join(REPO_ROOT, 'agents');
     if (fs.existsSync(agentsSrc)) {
@@ -270,6 +367,10 @@ function main() {
           dryRun: options.dryRun,
           label: 'agent personas',
         });
+        const copiedReadme = path.join(dest, 'README.md');
+        if (!options.dryRun && !options.symlink && fs.existsSync(copiedReadme)) {
+          fs.rmSync(copiedReadme, { force: true });
+        }
       }
     }
   }
@@ -286,6 +387,15 @@ function main() {
         label: 'shared references',
       });
     }
+  }
+
+  // 5. Scaffold factory/ directory if --factory requested
+  if (options.factory) {
+    console.log(`\n${colors.bold}Scaffolding Software Factory workspace:${colors.reset} ${colors.cyan}${path.join(cwd, 'factory')}${colors.reset}\n`);
+    scaffoldFactoryWorkspace(cwd, {
+      force: options.force,
+      dryRun: options.dryRun,
+    });
   }
 
   console.log(`\n${colors.bold}${colors.green}Done!${colors.reset} Your agent can now discover these capabilities in ${colors.cyan}${options.target}/${colors.reset}.\n`);
