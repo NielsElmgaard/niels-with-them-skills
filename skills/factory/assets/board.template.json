@@ -1,0 +1,8 @@
+{
+  "project": {
+    "name": "my-project",
+    "language": "auto",
+    "testCommand": "npm test"
+  },
+  "jobs": []
+}

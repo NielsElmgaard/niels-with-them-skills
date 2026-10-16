@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Software Factory — Visual Board</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --surface: #121721;
+      --surface-elevated: #19202e;
+      --border: #252f42;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --pass-bg: rgba(46, 160, 67, 0.16);
+      --pass-text: #3fb950;
+      --pass-border: rgba(63, 185, 80, 0.4);
+      --changes-bg: rgba(248, 81, 73, 0.16);
+      --changes-text: #ff7b72;
+      --changes-border: rgba(248, 81, 73, 0.45);
+      --warn-bg: rgba(210, 153, 34, 0.16);
+      --warn-text: #e3b341;
+      --warn-border: rgba(227, 179, 65, 0.45);
+      --pending-bg: rgba(88, 166, 255, 0.12);
+      --pending-text: #79c0ff;
+      --pending-border: rgba(88, 166, 255, 0.35);
+      --skipped-bg: rgba(139, 148, 158, 0.1);
+      --skipped-text: #8b949e;
+      --skipped-border: rgba(139, 148, 158, 0.25);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand h1 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--pass-text);
+      display: inline-block;
+      margin-right: 0.35rem;
+      box-shadow: 0 0 8px var(--pass-text);
+    }
+
+    .sync-dot.error {
+      background: var(--changes-text);
+      box-shadow: 0 0 8px var(--changes-text);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(260px, 1fr));
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      align-items: start;
+    }
+
+    .column {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 7rem);
+      max-height: calc(100vh - 5.5rem);
+    }
+
+    .column-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .column-count {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      background: var(--surface-elevated);
+      color: var(--text);
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    .column-body {
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .empty-col {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 2rem 0.5rem;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      opacity: 0.65;
+    }
+
+    .job-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      text-align: left;
+      width: 100%;
+      color: inherit;
+      font: inherit;
+    }
+
+    .job-card:hover,
+    .job-card:focus-visible {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      outline: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    .job-card.needs-human {
+      border-color: var(--warn-border);
+      background: linear-gradient(180deg, rgba(210, 153, 34, 0.12) 0%, var(--surface-elevated) 100%);
+      box-shadow: 0 0 0 1px rgba(227, 179, 65, 0.25);
+    }
+
+    .job-card.ready-to-merge {
+      border-color: var(--pass-border);
+      background: linear-gradient(180deg, rgba(46, 160, 67, 0.1) 0%, var(--surface-elevated) 100%);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+    }
+
+    .job-id {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .stage-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .stage-badge.needs-human {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      border: 1px solid var(--warn-border);
+    }
+
+    .stage-badge.ready-to-merge {
+      background: var(--pass-bg);
+      color: var(--pass-text);
+      border: 1px solid var(--pass-border);
+    }
+
+    .stage-badge.default {
+      background: var(--surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .job-title {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .job-branch {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .round-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .round-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .chip {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.12rem 0.42rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .chip.PASS {
+      background: var(--pass-bg);
+      color: var(--pass-text);
+      border-color: var(--pass-border);
+    }
+
+    .chip.CHANGES {
+      background: var(--changes-bg);
+      color: var(--changes-text);
+      border-color: var(--changes-border);
+    }
+
+    .chip.pending {
+      background: var(--pending-bg);
+      color: var(--pending-text);
+      border-color: var(--pending-border);
+    }
+
+    .chip.skipped {
+      background: var(--skipped-bg);
+      color: var(--skipped-text);
+      border-color: var(--skipped-border);
+      text-decoration: line-through;
+    }
+
+    .cmd-hint {
+      margin-top: 0.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: var(--bg);
+      padding: 0.3rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      overflow-x: auto;
+    }
+
+    /* Drawer Modal for inspecting Markdown files */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      justify-content: flex-end;
+      z-index: 100;
+    }
+
+    .backdrop.open {
+      display: flex;
+    }
+
+    .drawer {
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      width: min(820px, 94vw);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .drawer-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .drawer-title {
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .close-btn {
+      background: var(--surface-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.7rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus-visible {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .file-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .file-tab {
+      background: var(--surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.3rem 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .file-tab.active,
+    .file-tab:hover,
+    .file-tab:focus-visible {
+      color: var(--text);
+      border-color: var(--accent);
+      background: var(--surface-elevated);
+      outline: none;
+    }
+
+    .drawer-content {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>AI Software Factory</h1>
+      <span id="project-pill" class="pill">project: loading...</span>
+      <span id="test-pill" class="pill">test: —</span>
+    </div>
+    <div class="status-bar">
+      <span><span id="sync-dot" class="sync-dot"></span><span id="sync-status">Polling board.json</span></span>
+      <span id="job-summary" class="pill">0 jobs</span>
+    </div>
+  </header>
+
+  <main aria-label="Software Factory Pipeline Board">
+    <section class="column" aria-labelledby="col-spec">
+      <div class="column-header">
+        <span id="col-spec">1. Spec</span>
+        <span id="count-spec" class="column-count">0</span>
+      </div>
+      <div id="body-spec" class="column-body"></div>
+    </section>
+
+    <section class="column" aria-labelledby="col-build">
+      <div class="column-header">
+        <span id="col-build">2. Build (Worktree)</span>
+        <span id="count-build" class="column-count">0</span>
+      </div>
+      <div id="body-build" class="column-body"></div>
+    </section>
+
+    <section class="column" aria-labelledby="col-review">
+      <div class="column-header">
+        <span id="col-review">3. Parallel Review</span>
+        <span id="count-review" class="column-count">0</span>
+      </div>
+      <div id="body-review" class="column-body"></div>
+    </section>
+
+    <section class="column" aria-labelledby="col-gate">
+      <div class="column-header">
+        <span id="col-gate">4. Gate / Needs Human</span>
+        <span id="count-gate" class="column-count">0</span>
+      </div>
+      <div id="body-gate" class="column-body"></div>
+    </section>
+
+    <section class="column" aria-labelledby="col-merged">
+      <div class="column-header">
+        <span id="col-merged">5. Merged</span>
+        <span id="count-merged" class="column-count">0</span>
+      </div>
+      <div id="body-merged" class="column-body"></div>
+    </section>
+  </main>
+
+  <div id="backdrop" class="backdrop" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <div class="drawer">
+      <div class="drawer-header">
+        <span id="drawer-title" class="drawer-title">Job Details</span>
+        <button id="close-btn" class="close-btn" type="button">Close (Esc)</button>
+      </div>
+      <div id="file-tabs" class="file-tabs" role="tablist"></div>
+      <pre id="drawer-content" class="drawer-content">Select a file tab above to view its contents.</pre>
+    </div>
+  </div>
+
+  <script>
+    const STAGE_TO_COL = {
+      'spec': 'spec',
+      'spec-review': 'spec',
+      'build': 'build',
+      'review': 'review',
+      'needs-human': 'gate',
+      'ready-to-merge': 'gate',
+      'approver': 'gate',
+      'merged': 'merged',
+      'done': 'merged'
+    };
+
+    let lastBoardJson = '';
+    let currentJobs = [];
+    let lastFocusedTrigger = null;
+    let activeLoadToken = 0;
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function candidateFilesForJob(job) {
+      if (Array.isArray(job.files) && job.files.length > 0) {
+        return job.files.map((f) => String(f).replace(/^\/?factory\//, ''));
+      }
+      const base = `jobs/${job.id}`;
+      const list = [`${base}/spec.md`, `${base}/build.md`];
+      const maxRound = Math.max(Number(job.round) || 1, 1);
+      for (let r = 1; r <= maxRound; r++) {
+        const keys = job.reviews ? Object.keys(job.reviews) : ['security', 'code', 'tests', 'ui-ux'];
+        for (const k of keys) {
+          if (job.reviews && job.reviews[k] === 'skipped') continue;
+          list.push(`${base}/round-${r}/review-${k}.md`);
+        }
+      }
+      list.push(`${base}/decision.md`);
+      return list;
+    }
+
+    function renderReviewChips(reviews) {
+      if (!reviews || typeof reviews !== 'object') return '';
+      return Object.entries(reviews)
+        .map(([name, status]) => {
+          const normalized = ['PASS', 'CHANGES', 'pending', 'skipped'].includes(status) ? status : 'pending';
+          return `<span class="chip ${normalized}">${escapeHtml(name)}: ${escapeHtml(normalized)}</span>`;
+        })
+        .join('');
+    }
+
+    function renderCard(job) {
+      const isNeedsHuman = job.stage === 'needs-human' || job.stage === 'spec-review';
+      const isReady = job.stage === 'ready-to-merge';
+      const cardClass = isNeedsHuman ? 'job-card needs-human' : isReady ? 'job-card ready-to-merge' : 'job-card';
+      const badgeClass = isNeedsHuman ? 'needs-human' : isReady ? 'ready-to-merge' : 'default';
+
+      let cmdHint = '';
+      if (job.stage === 'needs-human') {
+        cmdHint = `<div class="cmd-hint">/factory rework ${escapeHtml(job.id)} "&lt;note&gt;" | /factory approve ${escapeHtml(job.id)}</div>`;
+      } else if (job.stage === 'ready-to-merge') {
+        cmdHint = `<div class="cmd-hint">/factory approve ${escapeHtml(job.id)}</div>`;
+      } else if (job.stage === 'spec-review') {
+        cmdHint = `<div class="cmd-hint">/factory build ${escapeHtml(job.id)}</div>`;
+      }
+
+      const roundNum = job.round || 0;
+      const reviewsHtml = job.reviews && Object.keys(job.reviews).length > 0
+        ? `<div class="round-row">
+             <div class="round-label">
+               <span>Round ${escapeHtml(roundNum || 1)}</span>
+               <span>${job.testStatus ? 'tests: ' + escapeHtml(job.testStatus) : ''}</span>
+             </div>
+             <div class="chips">${renderReviewChips(job.reviews)}</div>
+           </div>`
+        : '';
+
+      return `
+        <button type="button" class="${cardClass}" data-job-id="${escapeHtml(job.id)}">
+          <div class="card-top">
+            <span class="job-id">${escapeHtml(job.id)}</span>
+            <span class="stage-badge ${badgeClass}">${escapeHtml(job.stage)}</span>
+          </div>
+          ${job.title ? `<div class="job-title">${escapeHtml(job.title)}</div>` : ''}
+          <div class="job-branch">${escapeHtml(job.branch || `factory/${job.id}`)}</div>
+          ${reviewsHtml}
+          ${cmdHint}
+        </button>
+      `;
+    }
+
+    function renderBoard(data) {
+      const project = data.project || {};
+      document.getElementById('project-pill').textContent = `project: ${project.name || 'repository'}`;
+      document.getElementById('test-pill').textContent = `test: ${project.testCommand || 'auto'}`;
+
+      const jobs = Array.isArray(data.jobs) ? data.jobs : [];
+      currentJobs = jobs;
+      document.getElementById('job-summary').textContent = `${jobs.length} job${jobs.length === 1 ? '' : 's'}`;
+
+      const buckets = { spec: [], build: [], review: [], gate: [], merged: [] };
+      for (const job of jobs) {
+        const col = STAGE_TO_COL[job.stage] || 'spec';
+        buckets[col].push(job);
+      }
+
+      for (const [col, list] of Object.entries(buckets)) {
+        document.getElementById(`count-${col}`).textContent = String(list.length);
+        const container = document.getElementById(`body-${col}`);
+        if (list.length === 0) {
+          container.innerHTML = `<div class="empty-col">No jobs in ${col}</div>`;
+        } else {
+          container.innerHTML = list.map(renderCard).join('');
+        }
+      }
+
+      document.querySelectorAll('.job-card').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const job = currentJobs.find((j) => String(j.id) === btn.getAttribute('data-job-id'));
+          if (job) openDrawer(job, btn);
+        });
+      });
+    }
+
+    async function loadMarkdownFile(relPath, tabBtn) {
+      document.querySelectorAll('.file-tab').forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      if (tabBtn) {
+        tabBtn.classList.add('active');
+        tabBtn.setAttribute('aria-selected', 'true');
+      }
+      const contentEl = document.getElementById('drawer-content');
+      const token = ++activeLoadToken;
+      const normalizedPath = String(relPath ?? '').replace(/^\/?factory\//, '');
+      contentEl.textContent = `Loading ${normalizedPath}...`;
+      try {
+        const res = await fetch(`${normalizedPath}?t=${Date.now()}`, { cache: 'no-store' });
+        if (token !== activeLoadToken) return;
+        if (!res.ok) {
+          contentEl.textContent = `File not written yet (${normalizedPath}).`;
+          return;
+        }
+        const text = await res.text();
+        if (token !== activeLoadToken) return;
+        contentEl.textContent = text;
+      } catch (err) {
+        if (token !== activeLoadToken) return;
+        contentEl.textContent = `Could not load ${normalizedPath}: ${err.message}`;
+      }
+    }
+
+    function openDrawer(job, triggerBtn) {
+      lastFocusedTrigger = triggerBtn || document.activeElement;
+      const backdrop = document.getElementById('backdrop');
+      const titleEl = document.getElementById('drawer-title');
+      const tabsEl = document.getElementById('file-tabs');
+      titleEl.textContent = `${job.id} (${job.stage})`;
+
+      const files = candidateFilesForJob(job);
+      tabsEl.innerHTML = files
+        .map((f, idx) => {
+          const shortLabel = f.replace(`jobs/${job.id}/`, '');
+          return `<button type="button" role="tab" aria-selected="${idx === 0 ? 'true' : 'false'}" class="file-tab ${idx === 0 ? 'active' : ''}" data-file="${escapeHtml(f)}">${escapeHtml(shortLabel)}</button>`;
+        })
+        .join('');
+
+      const tabButtons = tabsEl.querySelectorAll('.file-tab');
+      tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => loadMarkdownFile(btn.getAttribute('data-file'), btn));
+      });
+
+      backdrop.classList.add('open');
+      document.getElementById('close-btn').focus();
+      if (files.length > 0) {
+        loadMarkdownFile(files[0], tabButtons[0]);
+      }
+    }
+
+    function closeDrawer() {
+      const backdrop = document.getElementById('backdrop');
+      if (!backdrop.classList.contains('open')) return;
+      backdrop.classList.remove('open');
+      if (lastFocusedTrigger && typeof lastFocusedTrigger.focus === 'function') {
+        lastFocusedTrigger.focus();
+      }
+    }
+
+    document.getElementById('close-btn').addEventListener('click', closeDrawer);
+    document.getElementById('backdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'backdrop') closeDrawer();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+
+    async function pollBoard() {
+      const dot = document.getElementById('sync-dot');
+      const status = document.getElementById('sync-status');
+      try {
+        const res = await fetch(`board.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        dot.classList.remove('error');
+        status.textContent = `Synced ${new Date().toLocaleTimeString()}`;
+        if (text !== lastBoardJson) {
+          lastBoardJson = text;
+          renderBoard(JSON.parse(text));
+        }
+      } catch (err) {
+        dot.classList.add('error');
+        status.textContent = `Waiting for board.json (${err.message})`;
+      }
+    }
+
+    pollBoard();
+    setInterval(pollBoard, 2000);
+  </script>
+</body>
+</html>
