@@ -1,0 +1,43 @@
+{
+  "skill_name": "brainstormer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to build something this weekend or level up what I already have, but I'm stuck on ideas. My GitHub is NielsElmgaard — can you look through my current projects and suggest some improvements to them, a new project idea that fits what I usually work on, and also something fresh that would be really interesting to build with AI?",
+      "expected_output": "The agent inspects the user's GitHub repositories and READMEs, summarizes their Builder DNA, and pitches 4-5 concrete ideas under each of the three tracks (12-15 ideas total across 1: High-Leverage Upgrades to Existing Projects naming real repos, 2: Aligned New Ideas matching their craft, 3: AI-Native Wildcards), then invites the user to pick one to refine without asking tech-stack questions.",
+      "files": [],
+      "expectations": [
+        "Fetches and inspects real GitHub repositories and READMEs for NielsElmgaard before suggesting ideas",
+        "Summarizes the user's Builder DNA (domains, patterns, and product taste)",
+        "Presents 4-5 ideas in Track 1 (High-Leverage Upgrades to Existing Projects) referencing actual repository names and capabilities",
+        "Presents 4-5 ideas in Track 2 (Aligned New Ideas) tailored to the user's established builder profile",
+        "Presents 4-5 ideas in Track 3 (AI-Native Wildcards) featuring genuinely AI-native product loops rather than generic chatbot wrappers",
+        "Invites the user to choose a direction for deeper vibe/audience/business refinement without asking tech-stack questions"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I have a rough idea for an app where local independent coffee roasters and neighborhood cafes can run 'flash tasting drops' for people nearby when a small batch comes out of the roaster. Help me brainstorm and refine this idea.",
+      "expected_output": "The agent engages in a focused Socratic product interview (1-3 questions for this turn) exploring the vibe/emotional hook, target audience, core experience loop, or business/distribution model, offering vivid contrasts and strictly avoiding any questions about tech stack, frameworks, or databases.",
+      "files": [],
+      "expectations": [
+        "Asks 1-3 focused, high-leverage questions rather than dumping an overwhelming list of 8+ questions at once",
+        "Explores product dimensions such as vibe/feeling, specific target audience and trigger moment, core magic loop, or business/distribution model",
+        "Uses concrete contrasts or examples to help the user articulate the vibe and positioning",
+        "Contains zero questions or prescriptions about tech stack, frameworks, databases, hosting, or APIs"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I want to build a tool for freelance designers to collect client feedback on brand moodboards without endless email threads. Should I build this with Next.js, Supabase, and WebSockets? Also help me figure out the actual product idea and stash an IDEA.md brief in the vault since I haven't created the new repo yet — it should be a quiet, high-craft studio tool aimed at solo brand designers charging $5k+ per project, using a 'pay per active client room' model.",
+      "expected_output": "The agent gently deflects/parks the Next.js/Supabase/WebSockets tech-stack question for the later specification stage, translates the real-time question into product experience terms, synthesizes the provided vibe, audience, core loop, and business model into a structured IDEA.md brief stashed via idea_vault.sh (with v1 wedge vs deferred scope and zero tech-stack prescriptions), and shows how to pull it into the new repo once created.",
+      "files": [],
+      "expectations": [
+        "Explicitly parks the Next.js, Supabase, and WebSockets tech-stack choices for the later specification stage rather than debating frameworks",
+        "Stashes the structured IDEA.md into the persistent Idea Vault (via idea_vault.sh save) capturing the one-line pitch, quiet studio vibe, solo brand designer audience + anti-audience, core magic loop, pay-per-room business model, and Day 1 v1 wedge",
+        "Keeps IDEA.md completely free of tech-stack, database schema, or framework prescriptions",
+        "Includes a sharp v1 wedge versus explicitly deferred scope and explains how to pull IDEA.md into the new repo later"
+      ]
+    }
+  ]
+}

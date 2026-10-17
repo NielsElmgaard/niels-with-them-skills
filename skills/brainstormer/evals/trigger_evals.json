@@ -1,0 +1,34 @@
+[
+  {
+    "query": "Can you check my GitHub projects and suggest some improvements to my existing repos, a new idea that matches what I usually build, and a cool AI project idea?",
+    "should_trigger": true
+  },
+  {
+    "query": "I have a raw idea for a micro-SaaS product and want to brainstorm the vibe, target audience, and business model before we talk about any code or tech stack.",
+    "should_trigger": true
+  },
+  {
+    "query": "Help me refine my app concept by asking me questions about how it should feel, who the audience is, and how it creates value, then write an IDEA.md brief.",
+    "should_trigger": true
+  },
+  {
+    "query": "I don't know what to build next. Analyze my GitHub profile to figure out my builder style and pitch me 3 tracks of project ideas.",
+    "should_trigger": true
+  },
+  {
+    "query": "Write a technical spec.md with database schemas, REST API endpoints, and TEST_COMMAND for our user authentication feature.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review my pull request diff across correctness, security, and performance before I merge it to main.",
+    "should_trigger": false
+  },
+  {
+    "query": "Our README.md and code comments are out of sync with the actual directory structure after our refactor. Please audit and align them.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design the TypeScript input and output interfaces and pagination contract for our /api/orders REST endpoint.",
+    "should_trigger": false
+  }
+]
