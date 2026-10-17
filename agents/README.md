@@ -8,6 +8,7 @@ Each persona specifies an agent role, its system prompt, tool requirements, mode
 
 | Persona | Primary Responsibility | Claude Code (`model`) | Gemini / Antigravity (`gemini_model` / `tier`) |
 |---|---|---|---|
+| [`brainstormer`](brainstormer.md) | Analyzes GitHub projects to pitch ideas and refines raw concepts on vibe, audience, and business model (`IDEA.md`) | `opus` | `gemini-4-argon` (`pro`) |
 | [`spec-writer`](spec-writer.md) | Inspects repo and writes a grounded, testable `spec.md` | `opus` | `gemini-4-argon` (`pro`) |
 | [`builder`](builder.md) | Implements `spec.md` and resolves review rounds in an isolated git worktree | `opus` | `gemini-4-argon` (`pro`) |
 | [`security-auditor`](security-auditor.md) | Audits code changes for exploitable security vulnerabilities and STRIDE threats | `opus` | `gemini-4-argon` (`pro`) |

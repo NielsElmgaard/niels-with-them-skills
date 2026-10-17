@@ -34,6 +34,9 @@ This is the niels-with-them-skills project. My collection of engineering skills 
 
 ## Skills by use
 
+### Product Ideation & Discovery
+- [`skills/brainstormer`](skills/brainstormer/) — Generates and refines project ideas through GitHub portfolio analysis and Socratic product, vibe, audience, and business-model interviewing without premature tech-stack decisions.
+
 ### Repository Maintenance & Alignment
 - [`skills/audit-align`](skills/audit-align/) — Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
 

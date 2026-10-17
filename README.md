@@ -49,6 +49,7 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 ### Skills
 
 - **[`audit-align`](skills/audit-align/)**: Audits and aligns repository documentation, comments, docstrings, project configuration, and commands with actual codebase reality to eliminate misleading context.
+- **[`brainstormer`](skills/brainstormer/)**: Generates and refines project ideas through GitHub portfolio analysis and Socratic product, vibe, audience, and business-model interviewing without premature tech-stack decisions.
 - **[`design-api-and-interface`](skills/design-api-and-interface/)**: Guides stable API and interface design. Use when designing APIs, module boundaries, or any public interface.
 - **[`factory`](skills/factory/)**: Orchestrates a visual multi-agent software factory loop across spec writing, worktree-isolated building, parallel multi-axis review rounds, and merge gates.
 - **[`git-keeper`](skills/git-keeper/)**: Structures disciplined git workflows including atomic commits, branch isolation, save points, conventional commit messages, pre-commit checks, and release versioning.
@@ -64,6 +65,7 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 
 ### Agent Personas
 
+- **[`brainstormer`](agents/brainstormer.md)**: Product Ideation & Vibe Strategist (`opus` / `Gemini 4 Argon`) that analyzes GitHub portfolios for tailored project ideas and refines raw concepts across vibe, audience, and business model into `IDEA.md`.
 - **[`spec-writer`](agents/spec-writer.md)**: Staff Product & Systems Architect (`opus` / `Gemini 4 Argon`) that inspects the codebase and writes grounded, testable specifications (`spec.md`).
 - **[`builder`](agents/builder.md)**: Senior Implementation Engineer (`opus` / `Gemini 4 Argon`) that implements specs and resolves review rounds inside isolated git worktrees.
 - **[`code-reviewer`](agents/code-reviewer.md)**: Staff Engineer code reviewer (`sonnet` / `Gemini 3.8 Flash`) evaluating changes across correctness, readability, architecture, security, and performance.
