@@ -39,8 +39,14 @@ Actionable checklist and verification guide for building accessible web applicat
 ## 5. Testing & Verification
 
 ### Automated Scanners
-- **Lighthouse**: Run Chrome DevTools Lighthouse audit for baseline automated checks.
+- **Lighthouse**: Run Chrome DevTools Lighthouse audit (`lighthouse_audit`) for baseline automated checks.
 - **axe-core**: Run `npx axe-core` or `@axe-core/cli` in CI/test pipelines.
+
+### Chrome DevTools MCP (Agent-Driven Live Verification)
+When `chrome-devtools-mcp` is available, verify live pages using:
+- **Accessibility Tree (`take_snapshot`)**: Inspect computed roles, accessible names, heading hierarchy (`h1`–`h6`), and ARIA states.
+- **Keyboard & Focus (`press_key`, `evaluate_script`)**: Step through controls with `Tab`, `Shift+Tab`, `Enter`, `Space`, and `Escape`; inspect `document.activeElement` and verify visible `:focus-visible` outlines and modal focus traps.
+- **Responsive Viewports & Zoom (`resize_page`, `take_screenshot`, `evaluate_script`)**: Verify desktop (`1440×900`) and mobile (`375×812`) viewports, 200% zoom scaling, touch target dimensions (`getBoundingClientRect()` ≥ 24×24px), and zero unintended horizontal overflow (`scrollWidth <= clientWidth`).
 
 ### Manual Verification
 - [ ] **Keyboard Only**: Unplug the mouse. Walk through all user flows using `Tab`, `Shift+Tab`, `Enter`, `Space`, `Arrow keys`, and `Escape`.

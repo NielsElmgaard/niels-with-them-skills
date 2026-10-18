@@ -14,8 +14,29 @@ Each persona specifies an agent role, its system prompt, tool requirements, mode
 | [`security-auditor`](security-auditor.md) | Audits code changes for exploitable security vulnerabilities and STRIDE threats | `opus` | `gemini-4-argon` (`pro`) |
 | [`code-reviewer`](code-reviewer.md) | Multi-axis review across correctness, readability, architecture, security, and performance | `sonnet` | `gemini-3.8-flash` (`flash`) |
 | [`test-engineer`](test-engineer.md) | Designs test suites, verifies acceptance criteria coverage, and catches edge-case gaps | `sonnet` | `gemini-3.8-flash` (`flash`) |
-| [`ui-ux-reviewer`](ui-ux-reviewer.md) | Evaluates UX interaction states, UI visual consistency, and WCAG 2.1 AA accessibility | `sonnet` | `gemini-3.8-flash` (`flash`) |
+| [`ui-ux-reviewer`](ui-ux-reviewer.md) | Evaluates UX interaction states, UI visual consistency, and WCAG 2.1 AA accessibility via Chrome DevTools MCP & static analysis | `sonnet` | `gemini-3.8-flash` (`flash`) |
 | [`web-performance-auditor`](web-performance-auditor.md) | Audits Core Web Vitals (LCP, INP, CLS), loading, rendering, and network performance | `sonnet` | `gemini-3.8-flash` (`flash`) |
+
+## Chrome DevTools MCP (Live Browser Inspection)
+
+Both [`ui-ux-reviewer`](ui-ux-reviewer.md) and [`web-performance-auditor`](web-performance-auditor.md) support **Live DevTools Mode** when [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp) is configured in your agent environment (and automatically fall back to **Static Mode** when it is not).
+
+### Claude Code
+```bash
+claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest
+```
+
+### `.mcp.json` / `mcp_config.json` (Claude Code, Gemini / Antigravity, Cursor)
+```json
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
+    }
+  }
+}
+```
 
 ## Installation
 
