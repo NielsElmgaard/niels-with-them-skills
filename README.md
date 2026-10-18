@@ -42,6 +42,23 @@ npx skills add NielsElmgaard/niels-with-them-skills --skill skill-creator
 npx skills add NielsElmgaard/niels-with-them-skills --all
 ```
 
+### 3. Updating Skills in Another Repository
+
+By default, the installer skips existing files so local edits are not accidentally overwritten. Pass `--force` (`-f`) to pull and overwrite with the latest upstream versions from `main`:
+
+```bash
+# Update all installed skills, personas, and references in .agents/
+npx --yes github:NielsElmgaard/niels-with-them-skills#main --all --force
+
+# Update a single skill (e.g. factory) or personas in a custom target directory (e.g. .claude)
+npx --yes github:NielsElmgaard/niels-with-them-skills#main --skill factory --agents --references --force --target .claude
+
+# Update via the Universal Skills CLI (skills.sh)
+npx skills update
+```
+
+> **Tip for `/factory` users:** To update factory skills, personas, and `factory/dashboard.html` without resetting your active `factory/board.json` or `factory/backlog.md`, run `--all --force` (for `.agents/` or `--target .claude`) and then run `--factory` *without* `--force`.
+
 ---
 
 ## Catalog
@@ -71,7 +88,7 @@ npx skills add NielsElmgaard/niels-with-them-skills --all
 - **[`code-reviewer`](agents/code-reviewer.md)**: Staff Engineer code reviewer (`sonnet` / `Gemini 3.8 Flash`) evaluating changes across correctness, readability, architecture, security, and performance.
 - **[`security-auditor`](agents/security-auditor.md)**: Security engineer (`opus` / `Gemini 4 Argon`) focused on vulnerability detection, threat modeling, and secure coding practices.
 - **[`test-engineer`](agents/test-engineer.md)**: QA engineer (`sonnet` / `Gemini 3.8 Flash`) specialized in test strategy, test writing, and coverage analysis.
-- **[`ui-ux-reviewer`](agents/ui-ux-reviewer.md)**: Product Designer & Accessibility Specialist (`sonnet` / `Gemini 3.8 Flash`) evaluating UX states, UI consistency, and WCAG 2.1 AA compliance.
+- **[`ui-ux-reviewer`](agents/ui-ux-reviewer.md)**: Product Designer & Accessibility Specialist (`sonnet` / `Gemini 3.8 Flash`) evaluating UX states, UI consistency, and WCAG 2.1 AA compliance via Chrome DevTools MCP and static analysis.
 - **[`web-performance-auditor`](agents/web-performance-auditor.md)**: Web performance engineer (`sonnet` / `Gemini 3.8 Flash`) focused on Core Web Vitals, loading, rendering, and network optimization.
 
 ---
