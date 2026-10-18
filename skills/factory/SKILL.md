@@ -132,7 +132,7 @@ If `factory/board.json` does not exist in the repository root, or if `project.la
    - [`security-auditor`](../../agents/security-auditor.md) (`opus` / `Gemini 4 Argon`) → `factory/jobs/<job-id>/round-<N>/review-security.md`
    - [`code-reviewer`](../../agents/code-reviewer.md) (`sonnet` / `Gemini 3.8 Flash`) → `factory/jobs/<job-id>/round-<N>/review-code.md`
    - [`test-engineer`](../../agents/test-engineer.md) (`sonnet` / `Gemini 3.8 Flash`) → `factory/jobs/<job-id>/round-<N>/review-tests.md`
-   - *(Only if `requiresUiReview: true`)* [`ui-ux-reviewer`](../../agents/ui-ux-reviewer.md) (`sonnet` / `Gemini 3.8 Flash`) → `factory/jobs/<job-id>/round-<N>/review-ui-ux.md`
+   - *(Only if `requiresUiReview: true`)* [`ui-ux-reviewer`](../../agents/ui-ux-reviewer.md) (`sonnet` / `Gemini 3.8 Flash`) → `factory/jobs/<job-id>/round-<N>/review-ui-ux.md` (uses Chrome DevTools MCP against a live preview or ephemeral dev server started from `.worktrees/<job-id>` when available, falling back to static diff review)
 3. **WAIT FOR ALL**: Wait until every active reviewer's markdown file exists in `round-<N>/`. Never resume the builder mid-round. As verdicts arrive, parse line 1 (`VERDICT: PASS` or `VERDICT: CHANGES`) and update `factory/board.json`.
 
 ### Step 4: Deterministic Gate & Rework / Decision
